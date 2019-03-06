@@ -1,0 +1,37 @@
+#include <PinChangeInterruptHandler.h>
+#include <RFReceiver.h>
+
+// Listen on digital pin 2
+RFReceiver receiver(2);
+
+void setup() {
+  pinMode(13,OUTPUT);
+  Serial.begin(9600);
+  receiver.begin();
+    pinMode( 8 , OUTPUT);  // Must be a PWM pin
+}
+
+void loop() {
+  char msg[MAX_PACKAGE_SIZE];
+  byte senderId = 0;
+  byte packageId = 0;
+  byte len = receiver.recvPackage((byte *)msg, &senderId, &packageId);
+
+  //Serial.print("Message: ");
+  //Serial.println(msg);
+  if (msg[0] == 'O')
+  {
+    Serial.println('1');
+    digitalWrite(13, HIGH);
+    analogWrite( 8 , 153 );  // 60% duty cycle
+    delay(500);
+    digitalWrite(13, LOW);
+      analogWrite( 8 , 0 );    // 0% duty cycle (off)
+ // delay(4000);             // wait for 4s
+  }
+  else
+  {
+    Serial.println('0');
+  }
+  
+}
